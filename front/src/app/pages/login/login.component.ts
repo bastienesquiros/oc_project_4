@@ -43,11 +43,11 @@ export class LoginComponent {
   public submit(): void {
     const loginRequest = this.form.value as LoginRequest;
     this.authService.login(loginRequest).subscribe({
-      next: (response: SessionInformation) => {
-        this.sessionService.logIn(response);
+      next: (_response: SessionInformation) => {
+        this.sessionService.logIn(_response);
         this.router.navigate(['/sessions']);
       },
-      error: error => this.onError = true,
+      error: (_error: unknown) => this.onError = true,
     });
   }
 }
