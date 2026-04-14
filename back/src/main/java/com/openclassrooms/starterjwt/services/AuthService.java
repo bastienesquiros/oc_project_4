@@ -47,7 +47,7 @@ public class AuthService {
             throw new BadRequestException();
         }
         User user = new User(request.email(), request.lastName(), request.firstName(),
-                passwordEncoder.encode(request.password()), false);
+                passwordEncoder.encode(request.password()));
         userService.save(user);
     }
 }

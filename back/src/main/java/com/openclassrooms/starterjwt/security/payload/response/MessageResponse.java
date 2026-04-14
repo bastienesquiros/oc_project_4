@@ -1,3 +1,3 @@
-package com.openclassrooms.starterjwt.dto;
+package com.openclassrooms.starterjwt.security.payload.response;
 
 public record MessageResponse(String message) {}

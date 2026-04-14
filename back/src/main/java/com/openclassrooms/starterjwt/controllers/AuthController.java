@@ -3,7 +3,7 @@ package com.openclassrooms.starterjwt.controllers;
 import com.openclassrooms.starterjwt.security.payload.request.LoginRequest;
 import com.openclassrooms.starterjwt.security.payload.request.SignupRequest;
 import com.openclassrooms.starterjwt.security.payload.response.JwtResponse;
-import com.openclassrooms.starterjwt.dto.MessageResponse;
+import com.openclassrooms.starterjwt.security.payload.response.MessageResponse;
 import com.openclassrooms.starterjwt.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
