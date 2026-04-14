@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { SessionInformation } from '../../../../core/models/sessionInformation.interface';
 import { SessionService } from '../../../../core/service/session.service';
 import { Session } from '../../../../core/models/session.interface';
@@ -18,7 +18,7 @@ export class ListComponent {
   private sessionApiService = inject(SessionApiService);
   private sessionService = inject(SessionService);
 
-  public sessions$: Observable<Session[]> = this.sessionApiService.all();
+  public sessions = toSignal(this.sessionApiService.all(), { initialValue: [] as Session[] });
 
   get user(): SessionInformation | undefined {
     return this.sessionService.sessionInformation;

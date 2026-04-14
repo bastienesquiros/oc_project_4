@@ -1,7 +1,7 @@
 <div class="app">
   <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
     <span>Yoga app</span>
-    @if ($isLogged() | async) {
+    @if (isLogged()) {
       <div>
         <span routerLink="sessions" class="link">Sessions</span>
         <span routerLink="me" class="link">Account</span>

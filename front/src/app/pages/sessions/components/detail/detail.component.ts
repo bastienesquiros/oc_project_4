@@ -1,7 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Teacher } from '../../../../core/models/teacher.interface';
 import { SessionService } from '../../../../core/service/session.service';
 import { TeacherService } from '../../../../core/service/teacher.service';
@@ -31,6 +33,7 @@ export class DetailComponent implements OnInit {
   private teacherService = inject(TeacherService);
   private matSnackBar = inject(MatSnackBar);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   constructor() {
     this.sessionId = this.route.snapshot.paramMap.get('id')!;
@@ -67,13 +70,15 @@ export class DetailComponent implements OnInit {
   private fetchSession(): void {
     this.sessionApiService
       .detail(this.sessionId)
-      .subscribe((session: Session) => {
-        this.session = session;
-        this.isParticipate = session.users.some(u => u === this.sessionService.sessionInformation!.id);
-        this.teacherService
-          .detail(session.teacher_id.toString())
-          .subscribe((teacher: Teacher) => this.teacher = teacher);
-      });
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        switchMap((session: Session) => {
+          this.session = session;
+          this.isParticipate = session.users.some(u => u === this.sessionService.sessionInformation!.id);
+          return this.teacherService.detail(session.teacher_id.toString());
+        })
+      )
+      .subscribe((teacher: Teacher) => this.teacher = teacher);
   }
 
 }

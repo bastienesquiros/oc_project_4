@@ -1,9 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { SessionService } from '../../../../core/service/session.service';
 import { TeacherService } from '../../../../core/service/teacher.service';
+import { Teacher } from '../../../../core/models/teacher.interface';
 import { Session } from '../../../../core/models/session.interface';
 import { SessionApiService } from '../../../../core/service/session-api.service';
 import { MaterialModule } from "../../../../shared/material.module";
@@ -23,10 +25,11 @@ export class FormComponent implements OnInit {
   private sessionService = inject(SessionService);
   private teacherService = inject(TeacherService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   public onUpdate: boolean = false;
   public sessionForm: FormGroup | undefined;
-  public teachers$ = this.teacherService.all();
+  public teachers = toSignal(this.teacherService.all(), { initialValue: [] as Teacher[] });
   private id: string | undefined;
 
   ngOnInit(): void {
@@ -39,6 +42,7 @@ export class FormComponent implements OnInit {
       this.id = this.route.snapshot.paramMap.get('id')!;
       this.sessionApiService
         .detail(this.id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((session: Session) => this.initForm(session));
     } else {
       this.initForm();
