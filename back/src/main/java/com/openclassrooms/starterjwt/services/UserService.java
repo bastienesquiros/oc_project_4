@@ -1,5 +1,6 @@
 package com.openclassrooms.starterjwt.services;
 
+import com.openclassrooms.starterjwt.exception.NotFoundException;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,22 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        this.userRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     public User findById(Long id) {
-        return this.userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
     }
 }
