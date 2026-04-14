@@ -1,4 +1,4 @@
-package com.openclassrooms.starterjwt.payload.request;
+package com.openclassrooms.starterjwt.security.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -2,9 +2,9 @@ package com.openclassrooms.starterjwt.services;
 
 import com.openclassrooms.starterjwt.exception.BadRequestException;
 import com.openclassrooms.starterjwt.models.User;
-import com.openclassrooms.starterjwt.payload.request.LoginRequest;
-import com.openclassrooms.starterjwt.payload.request.SignupRequest;
-import com.openclassrooms.starterjwt.payload.response.JwtResponse;
+import com.openclassrooms.starterjwt.security.payload.request.LoginRequest;
+import com.openclassrooms.starterjwt.security.payload.request.SignupRequest;
+import com.openclassrooms.starterjwt.security.payload.response.JwtResponse;
 import com.openclassrooms.starterjwt.security.jwt.JwtUtils;
 import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
 import org.springframework.security.authentication.AuthenticationManager;

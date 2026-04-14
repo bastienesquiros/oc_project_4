@@ -1,4 +1,4 @@
-package com.openclassrooms.starterjwt.payload.response;
+package com.openclassrooms.starterjwt.security.payload.response;
 
 public record JwtResponse(String token, String type, Long id, String username,
                            String firstName, String lastName, Boolean admin) {
