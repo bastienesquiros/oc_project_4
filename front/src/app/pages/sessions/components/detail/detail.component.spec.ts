@@ -12,7 +12,6 @@ import { DetailComponent } from './detail.component';
 describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
-  let service: SessionService;
 
   const mockSessionService = {
     sessionInformation: {
