@@ -33,7 +33,7 @@ public class AuthService {
 
     public JwtResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -43,11 +43,11 @@ public class AuthService {
     }
 
     public void register(SignupRequest request) {
-        if (userService.existsByEmail(request.getEmail())) {
+        if (userService.existsByEmail(request.email())) {
             throw new BadRequestException();
         }
-        User user = new User(request.getEmail(), request.getLastName(), request.getFirstName(),
-                passwordEncoder.encode(request.getPassword()), false);
+        User user = new User(request.email(), request.lastName(), request.firstName(),
+                passwordEncoder.encode(request.password()), false);
         userService.save(user);
     }
 }
