@@ -8,6 +8,8 @@ import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 import java.util.List;
 
 @Service
@@ -61,9 +63,9 @@ public class SessionService {
             throw new BadRequestException();
         }
 
-        session.setUsers(session.getUsers().stream()
+        session.setUsers(new ArrayList<>(session.getUsers().stream()
                 .filter(u -> !u.getId().equals(userId))
-                .toList());
+                .toList()));
         sessionRepository.save(session);
     }
 }
