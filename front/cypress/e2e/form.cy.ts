@@ -20,8 +20,10 @@ describe('Session form', () => {
       cy.intercept('GET', '/api/session', []).as('sessions');
       cy.intercept('GET', '/api/teacher', mockTeachers).as('teachers');
       cy.login(true);
+      cy.wait('@sessions');
       cy.contains('button', 'Create').click();
       cy.url().should('include', '/sessions/create');
+      cy.wait('@teachers');
     });
 
     it('should display the create form with title', () => {
@@ -44,7 +46,7 @@ describe('Session form', () => {
       cy.get('button[type=submit]').should('not.be.disabled');
     });
 
-    it('should create a session and navigate to sessions list', () => {
+    it('should create a session, show snackbar and navigate to sessions list', () => {
       cy.intercept('POST', '/api/session', mockSession).as('createSession');
       cy.intercept('GET', '/api/session', [mockSession]).as('sessionsAfter');
 
@@ -56,6 +58,12 @@ describe('Session form', () => {
       cy.get('button[type=submit]').click();
 
       cy.wait('@createSession');
+      cy.contains('Session created !').should('be.visible');
+      cy.url().should('include', '/sessions');
+    });
+
+    it('should navigate back to sessions when clicking back arrow', () => {
+      cy.get('button[mat-icon-button]').first().click();
       cy.url().should('include', '/sessions');
     });
   });
@@ -66,8 +74,11 @@ describe('Session form', () => {
       cy.intercept('GET', '/api/session/1', mockSession).as('sessionDetail');
       cy.intercept('GET', '/api/teacher', mockTeachers).as('teachers');
       cy.login(true);
-      cy.contains('button', 'Edit').click();
+      cy.wait('@sessions');
+      cy.get('mat-card.item').first().contains('button', 'Edit').click();
       cy.url().should('include', '/sessions/update');
+      cy.wait('@sessionDetail');
+      cy.wait('@teachers');
     });
 
     it('should display the update form with existing data', () => {
@@ -76,7 +87,7 @@ describe('Session form', () => {
       cy.get('textarea[formControlName=description]').should('have.value', 'A relaxing morning session');
     });
 
-    it('should update the session and navigate to sessions list', () => {
+    it('should update the session, show snackbar and navigate to sessions list', () => {
       cy.intercept('PUT', '/api/session/1', { ...mockSession, name: 'Updated Yoga' }).as('updateSession');
       cy.intercept('GET', '/api/session', [mockSession]).as('sessionsAfter');
 
@@ -84,7 +95,33 @@ describe('Session form', () => {
       cy.get('button[type=submit]').click();
 
       cy.wait('@updateSession');
+      cy.contains('Session updated !').should('be.visible');
       cy.url().should('include', '/sessions');
+    });
+
+    it('should navigate back to sessions when clicking back arrow', () => {
+      cy.get('button[mat-icon-button]').first().click();
+      cy.url().should('include', '/sessions');
+    });
+  });
+
+  describe('Non-admin access', () => {
+    it('should redirect unauthenticated user accessing create form to login', () => {
+      cy.visit('/sessions/create');
+      cy.url().should('include', '/login');
+    });
+
+    it('should redirect authenticated non-admin to sessions when navigating to create form', () => {
+      cy.intercept('GET', '/api/session', []).as('sessions');
+      cy.intercept('GET', '/api/teacher', mockTeachers).as('teachers');
+      cy.login(false);
+      cy.wait('@sessions');
+      cy.window().then((win) => {
+        win.history.pushState({}, '', '/sessions/create');
+        win.dispatchEvent(new PopStateEvent('popstate', { state: {} }));
+      });
+      cy.url().should('include', '/sessions');
+      cy.url().should('not.include', '/create');
     });
   });
 });

@@ -14,8 +14,10 @@ describe('Account (me)', () => {
       cy.intercept('GET', '/api/session', []).as('sessions');
       cy.intercept('GET', '/api/user/1', mockUser).as('user');
       cy.login(false);
+      cy.wait('@sessions');
       cy.contains('Account').click();
       cy.url().should('include', '/me');
+      cy.wait('@user');
     });
 
     it('should display user information', () => {
@@ -31,12 +33,17 @@ describe('Account (me)', () => {
       cy.contains('button', 'Detail').should('be.visible');
     });
 
-    it('should delete account and redirect to home', () => {
+    it('should display created and updated dates', () => {
+      cy.contains('January 1, 2024').should('be.visible');
+    });
+
+    it('should delete account, show snackbar and redirect to home', () => {
       cy.intercept('DELETE', '/api/user/1', {}).as('deleteUser');
 
       cy.contains('button', 'Detail').click();
 
       cy.wait('@deleteUser');
+      cy.contains('Your account has been deleted !').should('be.visible');
       cy.url().should('include', '/');
     });
 
@@ -52,8 +59,10 @@ describe('Account (me)', () => {
       cy.intercept('GET', '/api/session', []).as('sessions');
       cy.intercept('GET', '/api/user/1', adminUser).as('user');
       cy.login(true);
+      cy.wait('@sessions');
       cy.contains('Account').click();
       cy.url().should('include', '/me');
+      cy.wait('@user');
     });
 
     it('should show admin badge for admin user', () => {
@@ -62,6 +71,16 @@ describe('Account (me)', () => {
 
     it('should not show delete button for admin', () => {
       cy.contains('button', 'Detail').should('not.exist');
+    });
+
+    it('should display admin user information', () => {
+      cy.contains('Admin USER').should('be.visible');
+      cy.contains('yoga@studio.com').should('be.visible');
+    });
+
+    it('should navigate back when clicking back button', () => {
+      cy.get('button[mat-icon-button]').first().click();
+      cy.url().should('include', '/sessions');
     });
   });
 });

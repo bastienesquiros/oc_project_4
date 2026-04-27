@@ -19,6 +19,22 @@ describe('Register', () => {
     cy.get('button[type=submit]').should('be.disabled');
   });
 
+  it('should disable submit button with invalid email', () => {
+    cy.get('input[formControlName=firstName]').type('John');
+    cy.get('input[formControlName=lastName]').type('Doe');
+    cy.get('input[formControlName=email]').type('not-an-email');
+    cy.get('input[formControlName=password]').type('test!1234');
+    cy.get('button[type=submit]').should('be.disabled');
+  });
+
+  it('should enable submit button when all fields are valid', () => {
+    cy.get('input[formControlName=firstName]').type('John');
+    cy.get('input[formControlName=lastName]').type('Doe');
+    cy.get('input[formControlName=email]').type('john@test.com');
+    cy.get('input[formControlName=password]').type('test!1234');
+    cy.get('button[type=submit]').should('not.be.disabled');
+  });
+
   it('should register successfully and redirect to /login', () => {
     cy.intercept('POST', '/api/auth/register', {
       statusCode: 200,
@@ -49,6 +65,7 @@ describe('Register', () => {
 
     cy.wait('@registerFail');
     cy.get('.error').should('be.visible');
+    cy.get('.error').should('contain', 'An error occurred');
   });
 
   it('should have a link back to login page', () => {

@@ -128,6 +128,9 @@ Maven fait échouer le build si le seuil n'est pas atteint.
 
 > Les DTOs, payloads de sécurité, repositories et la classe main sont exclus de la mesure.
 
+*Exemple de résultat :*
+![jacoco_coverage.png](screenshots/jacoco_coverage.png)
+
 ### Front — couverture unitaire (Jest)
 
 ```bash
@@ -152,6 +155,9 @@ Jest fait échouer la commande si le seuil n'est pas atteint.
 | Functions | ≥ 80 % |
 | Lines | ≥ 80 % |
 
+*Exemple de résultat :*
+![jest_coverage.png](screenshots/jest_coverage.png)
+
 ### Front — couverture E2E (nyc / Istanbul)
 
 Lancer d'abord les tests E2E, puis générer le rapport :
@@ -167,3 +173,6 @@ Rapport disponible ici :
 ```
 front/coverage/lcov-report/index.html
 ```
+
+*Exemple de résultat :*
+![e2e_coverage.png](screenshots/e2e_coverage.png)

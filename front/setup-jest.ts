@@ -3,7 +3,8 @@
 // "Cannot set base providers because it has already been called" error while
 // still initializing correctly when running `npm test` (direct jest).
 try {
-  require('jest-preset-angular/setup-jest');
+  const { setupZoneTestEnv } = require('jest-preset-angular/setup-env/zone');
+  setupZoneTestEnv();
 } catch (_) {
   // Already initialized by @angular-builders/jest
 }
